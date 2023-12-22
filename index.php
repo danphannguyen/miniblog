@@ -2,20 +2,34 @@
 <html lang="en">
 
 <?php
+session_start();
 
-require_once './vendor/autoload.php';
+// Include du fichiers contenant toute les fonctions
+include('./App/Model/UserModel.php');
 
-use Dan\Miniblog\Controller\UserController;
-
-if (isset($_GET['action'])) {
-    switch ($_GET['action']) {
+// switch case pour traiter l'action
+if (isset($_POST['action'])) {
+    switch ($_POST['action']) {
         case 'login':
-            $userController = new UserController();
-            echo $userController->connexion($_POST['mailLogin'], $_POST['passwordLogin']);
+            // Si c'est login on teste la connexion
+            $result = connexion($_POST['mailLogin'], $_POST['passwordLogin']);
+            include('./App/view/debugView.php');
             break;
         case 'register':
-            $userController = new UserController();
-            echo $userController->register($_POST['mailRegister'], $_POST['passwordRegister'], $_POST['firstname'], $_POST['lastname']);
+            // Si c'est un register on vérifie les paramêtre et on register
+            if (isset($_POST['mailRegister']) && isset($_POST['passwordRegister']) && isset($_POST['firstnameRegister']) && isset($_POST['lastnameRegister'])) {
+                $mail = $_POST['mailRegister'];
+                $password = $_POST['passwordRegister'];
+                $firstname = $_POST['firstnameRegister'];
+                $lastname = $_POST['lastnameRegister'];
+                $result = register($mail, $password, $firstname, $lastname);
+                include('./App/view/debugView.php');
+            }
+            break;
+        case 'logout':
+            // Si c'est une déconnexion, on unset les variables de session + session destroy
+            unset($_SESSION['mail']);
+            session_destroy();
             break;
         default:
             echo "Erreur";
@@ -38,19 +52,34 @@ if (isset($_GET['action'])) {
         <ul>
             <li><a href="#">Accueil</a></li>
             <li><a href="#">Archives</a></li>
-            <li>
-                <button type="button" data-bs-toggle="modal" data-bs-target="#exampleModalToggle">
-                    Connexion
-                </button>
-            </li>
+            <?php
+            // Button de connexion si la var de session ma!l n'existe pas
+            if (!isset($_SESSION['mail'])) {
+                echo '
+                <li>
+                    <button type="button" data-bs-toggle="modal" data-bs-target="#exampleModalToggle">
+                        Connexion
+                    </button>
+                </li>
+                ';
+            }
+
+            ?>
         </ul>
-        <div id="profile">
+        <?php
+
+        //  button profil si la var de session mail existe
+        if (isset($_SESSION['mail'])) {
+            echo '
+            <button id="profile" type="button" data-bs-toggle="modal" data-bs-target="#profilModal">
             <img src="./img/profile.svg" alt="">
-            <p> Admin </p>
-        </div>
+            </button>
+            ';
+        }
+        ?>
     </nav>
 
-    <!-- Modal -->
+    <!-- Modal connexion -->
     <div class="modal fade" id="exampleModalToggle" aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -60,11 +89,12 @@ if (isset($_GET['action'])) {
                 </div>
                 <div class="modal-body">
 
-                    <form action="index.php?action=login" method="POST">
+                    <form action="./index.php" method="POST">
                         <label for="mailLogin">Email :</label>
                         <input type="email" id="mailLogin" name="mailLogin" required><br><br>
                         <label for="passwordLogin">Mot de passe :</label>
                         <input type="password" id="passwordLogin" name="passwordLogin" required><br><br>
+                        <input type="hidden" name="action" value="login">
                         <input type="submit" value="Se connecter">
                     </form>
 
@@ -78,6 +108,7 @@ if (isset($_GET['action'])) {
         </div>
     </div>
 
+    <!-- Modal inscription -->
     <div class="modal fade" id="exampleModalToggle2" aria-hidden="true" aria-labelledby="exampleModalToggleLabel2" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -87,15 +118,15 @@ if (isset($_GET['action'])) {
                 </div>
                 <div class="modal-body">
 
-                    <form name="register" onsubmit="return validateForm()" action="index.php?action=register" method="POST">
+                    <form name="register" onsubmit="return validateForm()" action="index.php" method="POST">
                         <label for="mailRegister">Email :</label>
                         <input type="email" id="mailRegister" name="mailRegister" required><br><br>
 
                         <label for="firstname">Prénom :</label>
-                        <input type="text" id="firstname" name="firstname" required><br><br>
+                        <input type="text" id="firstname" name="firstnameRegister" required><br><br>
 
                         <label for="lastname">Nom :</label>
-                        <input type="text" id="lastname" name="lastname" required><br><br>
+                        <input type="text" id="lastname" name="lastnameRegister" required><br><br>
 
                         <label for="passwordRegister">Mot de passe :</label>
                         <input type="password" id="passwordRegister" name="passwordRegister" required><br><br>
@@ -103,6 +134,7 @@ if (isset($_GET['action'])) {
                         <label for="confirmPassword">Confirmer le mot de passe:</label>
                         <input type="password" id="confirmPassword" required><br><br>
 
+                        <input type="hidden" name="action" value="register">
                         <input type="submit" value="S'inscrire">
                     </form>
 
@@ -115,6 +147,17 @@ if (isset($_GET['action'])) {
             </div>
         </div>
     </div>
+
+    <section>
+
+        <?php
+        // Switch case pour Afficher les view
+        if (isset($_SESSION['mail'])) {
+            include('./App/view/profilModalView.php');
+        }
+        ?>
+
+    </section>
 
     <script>
         function validateForm() {
