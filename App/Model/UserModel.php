@@ -21,12 +21,12 @@ function connexion($mail, $password)
 }
 
 // Fonction d'inscription
-function register($mail, $password, $firstname, $lastname)
+function register($mail, $password, $firstname, $lastname, $path)
 {
     if (isMailExist($mail)) {
         return "L adresse mail existe déjà";
     } else {
-        if (addUser($mail, $password, $firstname, $lastname)) {
+        if (addUser($mail, $password, $firstname, $lastname, $path)) {
             return 'Inscription réussie';
         } else {
             return 'Erreur lors de l inscription';
@@ -83,20 +83,36 @@ function bindUserInfo($mail)
 }
 
 // Ajout d'un utilisateur
-function addUser($mail, $password, $firstname, $lastname)
+function addUser($mail, $password, $firstname, $lastname, $path)
 {
 
     $db = dbConnect();
 
     $hash = password_hash($password, PASSWORD_DEFAULT);
 
-    $query = "INSERT INTO users (mail_user, password_user, firstname_user, lastname_user) VALUES (:mail, :pswd, :firstname, :lastname)";
+    $query = "INSERT INTO users (mail_user, password_user, firstname_user, lastname_user, path_user) VALUES (:mail, :pswd, :firstname, :lastname, :path)";
 
     $stmt = $db->prepare($query);
     $stmt->bindValue(":mail", $mail, PDO::PARAM_STR);
     $stmt->bindValue(":pswd", $hash, PDO::PARAM_STR);
     $stmt->bindValue(":firstname", $firstname, PDO::PARAM_STR);
     $stmt->bindValue(":lastname", $lastname, PDO::PARAM_STR);
+    $stmt->bindValue(":path", $path, PDO::PARAM_STR);
     // Exécution de la requête et retourne son état
     return $stmt->execute();
+}
+
+// Ajout d'une image
+function addImage($mail, $image)
+{
+    $uploadDir = "uploads/";
+    $newFileName = $mail . ".png";
+    $uploadFile = $uploadDir . basename($newFileName);
+
+    // Déplacez le fichier vers le répertoire d'upload
+    if (move_uploaded_file($image, $uploadFile)) {
+        return $uploadFile;
+    } else {
+        return "";
+    }
 }

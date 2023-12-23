@@ -13,22 +13,30 @@ if (isset($_POST['action'])) {
         case 'login':
             // Si c'est login on teste la connexion
             $result = connexion($_POST['mailLogin'], $_POST['passwordLogin']);
-            include('./App/view/debugView.php');
+            include('./App/view/loginView.php');
             break;
         case 'register':
             // Si c'est un register on vérifie les paramêtre et on register
             if (isset($_POST['mailRegister']) && isset($_POST['passwordRegister']) && isset($_POST['firstnameRegister']) && isset($_POST['lastnameRegister'])) {
+                
                 $mail = $_POST['mailRegister'];
                 $password = $_POST['passwordRegister'];
                 $firstname = $_POST['firstnameRegister'];
                 $lastname = $_POST['lastnameRegister'];
-                $result = register($mail, $password, $firstname, $lastname);
-                include('./App/view/debugView.php');
+
+                if (isset($_FILES["profileFile"]) && $_FILES["profileFile"]["error"] == 0) {
+                    $path = addImage($mail, $_FILES["profileFile"]["tmp_name"]);
+                }
+
+                $result = register($mail, $password, $firstname, $lastname, $path);
+                include('./App/view/loginView.php');
             }
             break;
         case 'logout':
             // Si c'est une déconnexion, on unset les variables de session + session destroy
             unset($_SESSION['mail']);
+            unset($_SESSION['firstname']);
+            unset($_SESSION['lastname']);
             session_destroy();
             break;
         default:
@@ -118,7 +126,10 @@ if (isset($_POST['action'])) {
                 </div>
                 <div class="modal-body">
 
-                    <form name="register" onsubmit="return validateForm()" action="index.php" method="POST">
+                    <form name="register" onsubmit="return validateForm()" action="index.php" method="post" enctype="multipart/form-data">
+                        <label for="profileFile">Photo de profil :</label>
+                        <input type="file" name="profileFile" id="profileFile"><br><br>
+
                         <label for="mailRegister">Email :</label>
                         <input type="email" id="mailRegister" name="mailRegister" required><br><br>
 
