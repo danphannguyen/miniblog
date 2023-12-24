@@ -13,12 +13,9 @@ body {
   padding: 0;
 
   background-color: var(--clr-background) !important;
-  color: var(--clr-text) !important;
-  /* emule du contenu */
-  height: 300vh;
 }
 
-body::-webkit-scrollbar{
+body::-webkit-scrollbar {
   display: none;
 }
 
@@ -44,24 +41,65 @@ p {
   flex-direction: column;
 }
 
+/* ============== ROOT ============== */
+
+:root {
+  --clr-background: #2A2A2A;
+  --clr-foreground: #545454;
+  --clr-sbackground: #353535;
+  --clr-text: #F0F0F0;
+}
+
 /* ============== NAVBAR ============== */
 
 nav {
-    display: flex;
-    align-items: center;
-    justify-content: end;
-    gap: 2rem;
-    background-color: #D8DAD3;
-    padding: 1rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  flex-direction: column;
+  gap: 3rem;
+  background-color: var(--clr-foreground);
+  padding: 1rem 1rem;
+  border-radius: 0px 10px 10px 0px;
+  width: fit-content;
+  position: fixed;
+  top: 50%;
+  transform: translate(0px, -50%);
 }
 
-nav ul {
-    display: flex;
-    gap: 4rem;
-    list-style: none;
-    align-items: center;
-    justify-content: end;
-    margin: 0;
+nav span {
+  font-size: 12px;
+  color: var(--clr-text);
+}
+
+#profilePicture {
+  height: 56px;
+  width: 56px;
+  border-radius: 50%;
+}
+
+.bgNavSvg {
+  padding: 1rem;
+  background-color: var(--clr-sbackground);
+  border-radius: 50%;
+}
+
+.navSvg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.navLink {
+  transition: all 0.3s ease-in-out;
+}
+
+.navLink:hover {
+  opacity: 0.5;
+}
+
+#connexion {
+  border: none;
+  background-color: transparent;
 }
 
 #profile {
@@ -69,14 +107,93 @@ nav ul {
   background-color: transparent;
 }
 
-#profile img {
-    width: 3rem;
-    height: 3rem;
-    border-radius: 50%;
+/* ============== Content Section ============== */
+
+#contentSection {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 3rem;
+  padding: 4rem 4rem;
+  width: 100%;
+  min-height: 100vh;
+  color: var(--clr-text);
+}
+
+#contentSection h1 {
+  font-size: 3rem;
+  margin-bottom: 3rem;
+}
+
+#contentSection form {
+  width: 80vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4rem;
+}
+
+#formPostTitle {  
+  width: 100%;  
+  font-size: 3rem;
+  background: transparent;
+  border: none;
+  color: var(--clr-text);
+}
+
+#formPostContent {
+  width: 90%;
+  font-size: 1.5rem;
+  background: transparent;
+  border: none;
+  color: var(--clr-text);
+}
+
+/* ==============  CID Modal ============== */
+
+#modalPicture {
+  height: 100px;
+  width: 100px;
+  border-radius: 50%;
 }
 
 .disconnect {
   border: none;
   background-color: rgb(196, 45, 45) !important;
   color: white !important;
+}
+
+/* ==============  Write Article Link ============== */
+
+#WALink {
+  position: fixed;
+  display: block;
+  width: fit-content;
+  height: fit-content;
+  border-radius: 50%;
+  bottom: 6rem;
+  right: 6rem;
+  background-color: var(--clr-text);
+
+  transition: all 0.3s ease-in-out;
+}
+
+#WALink:hover {
+  opacity: 0.5;
+}
+
+.Mbutton {
+  padding: 8px 20px;
+  background-color: var(--clr-foreground);
+  color: var(--clr-text);
+  border: solid 2px var(--clr-foreground);
+  border-radius: 8px;
+  transition: all 0.3s ease-in-out;
+}
+
+.Mbutton:hover {
+  background-color: var(--clr-background);
+  color: var(--clr-text);
 }

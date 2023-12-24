@@ -18,26 +18,32 @@ if (isset($_POST['action'])) {
         case 'register':
             // Si c'est un register on vérifie les paramêtre et on register
             if (isset($_POST['mailRegister']) && isset($_POST['passwordRegister']) && isset($_POST['firstnameRegister']) && isset($_POST['lastnameRegister'])) {
-                
-                $mail = $_POST['mailRegister'];
-                $password = $_POST['passwordRegister'];
-                $firstname = $_POST['firstnameRegister'];
-                $lastname = $_POST['lastnameRegister'];
+
+                // par défaut on remet l'icone de base
+                $path = "./img/profile.svg";
 
                 if (isset($_FILES["profileFile"]) && $_FILES["profileFile"]["error"] == 0) {
                     $path = addImage($mail, $_FILES["profileFile"]["tmp_name"]);
                 }
 
-                $result = register($mail, $password, $firstname, $lastname, $path);
+                $result = register($_POST['mailRegister'], $_POST['passwordRegister'], $_POST['firstnameRegister'], $_POST['lastnameRegister'], $path);
                 include('./App/view/loginView.php');
             }
             break;
         case 'logout':
             // Si c'est une déconnexion, on unset les variables de session + session destroy
+            unset($_SESSION['id']);
             unset($_SESSION['mail']);
             unset($_SESSION['firstname']);
             unset($_SESSION['lastname']);
+            unset($_SESSION['profilePicture']);
             session_destroy();
+            break;
+        case 'addPost':
+            // Si c'est un addPost on ajoute l'article
+            if (isset($_POST['formTitle']) && isset($_POST['formContent'])) {
+                $result = addPost($_SESSION['id'], $_POST['formTitle'], $_POST['formContent']);
+            }
             break;
         default:
             echo "Erreur";
@@ -57,32 +63,39 @@ if (isset($_POST['action'])) {
 
 <body>
     <nav>
-        <ul>
-            <li><a href="#">Accueil</a></li>
-            <li><a href="#">Archives</a></li>
-            <?php
-            // Button de connexion si la var de session ma!l n'existe pas
-            if (!isset($_SESSION['mail'])) {
-                echo '
-                <li>
-                    <button type="button" data-bs-toggle="modal" data-bs-target="#exampleModalToggle">
-                        Connexion
-                    </button>
-                </li>
-                ';
-            }
+        <a href="#" class="navLink">
+            <div class="dc-center">
+                <span class='bgNavSvg'><img class="navSvg" src="./img/archive.svg" alt=""></span>
+                <span>Archives</span>
+            </div>
+        </a>
 
-            ?>
-        </ul>
+        <a href="./index.php" class="navLink">
+            <div class="dc-center">
+                <span class='bgNavSvg'><img class="navSvg" src="./img/rainbow.svg" alt=""></span>
+                <span>Accueil</span>
+            </div>
+        </a>
+
         <?php
+        // Button de connexion si la var de session ma!l n'existe pas
+        if (!isset($_SESSION['mail'])) {
+            echo '
+                    <button id="connexion" class="dc-center navLink" type="button" data-bs-toggle="modal" data-bs-target="#exampleModalToggle">
+                        <span class="bgNavSvg"><img class="navSvg" src="./img/profile.svg" alt=""></span>
+                        <span>Connexion</span>
+                    </button>
+                ';
+        }
 
         //  button profil si la var de session mail existe
         if (isset($_SESSION['mail'])) {
-            echo '
-            <button id="profile" type="button" data-bs-toggle="modal" data-bs-target="#profilModal">
-            <img src="./img/profile.svg" alt="">
-            </button>
-            ';
+            echo "
+                <button id='profile' class='dc-center navLink' type='button' data-bs-toggle='modal' data-bs-target='#profilModal'>
+                    <img id='profilePicture' class='navSvg' src='{$_SESSION['profilePicture']}' alt=''>
+                    <span>Profile</span>
+                </button>
+            ";
         }
         ?>
     </nav>
@@ -159,30 +172,50 @@ if (isset($_POST['action'])) {
         </div>
     </div>
 
-    <section>
+    <section id="contentSection">
 
         <?php
         // Switch case pour Afficher les view
         if (isset($_SESSION['mail'])) {
+
+            // Affichage de la modal profile
             include('./App/view/profilModalView.php');
+
+            // Si action est set
+            if (isset($_GET['action'])) {
+
+                // Et que l'action n'est pas write on affiche lien vers write
+                if ($_GET['action'] != 'write') {
+                    include('./App/view/WALinkView.php');
+                }
+
+                switch ($_GET['action']) {
+                    case 'write':
+                        include('./App/view/WAView.php');
+                        break;
+                    case 'read':
+                        break;
+                    default:
+                        echo "Erreur";
+                        break;
+                }
+
+            } else {
+
+                // Affiche le bouton pour ajouter un article
+                include('./App/view/WALinkView.php');
+
+            }
         }
+
         ?>
 
     </section>
 
-    <script>
-        function validateForm() {
-            var password = document.forms["register"]["passwordRegister"].value;
-            var confirmPassword = document.forms["register"]["confirmPassword"].value;
-            if (password != confirmPassword) {
-                alert("Les mots de passe ne correspondent pas.");
-                return false;
-            }
-        }
-    </script>
-
 </body>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+<script src="./src/script.js"></script>
 
 </html>

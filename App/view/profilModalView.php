@@ -7,6 +7,7 @@
                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
              </div>
              <div class="modal-body dc-center">
+                 <img id="modalPicture" src="<?php echo $_SESSION['profilePicture'] ?>" alt="">
                  <span>Prénom : <?php echo $_SESSION['firstname'] ?></span>
                  <span>Nom : <?php echo $_SESSION['lastname'] ?></span>
                  <span>Mail : <?php echo $_SESSION['mail'] ?></span>
