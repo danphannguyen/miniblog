@@ -1,5 +1,5 @@
-<p>
+<span id="log">
     <?php
     echo $result;
     ?>
-</p>
+</span>

@@ -1,6 +1,6 @@
 <div class="dc-center">
     <h1>Écrivez votre article !</h1>
-    <form action="index.php" method="POST">
+    <form id="WAForm" action="index.php" method="POST">
 
         <input type="hidden" name="action" value="addPost">
 

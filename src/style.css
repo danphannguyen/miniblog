@@ -50,6 +50,15 @@ p {
   --clr-text: #F0F0F0;
 }
 
+/* ============== LOG View ============== */
+
+#log {
+  position: absolute;
+  color: var(--clr-text);
+  text-align: center;
+  width: 100%;
+}
+
 /* ============== NAVBAR ============== */
 
 nav {
@@ -107,6 +116,19 @@ nav span {
   background-color: transparent;
 }
 
+.modal-content {
+  background-color: var(--clr-sbackground) !important;
+  color: var(--clr-text) !important;
+}
+
+.btn-close {
+  filter: invert(1);
+}
+
+#exampleModalLabel {
+  margin-bottom: 0 !important;
+}
+
 /* ============== Content Section ============== */
 
 #contentSection {
@@ -127,7 +149,6 @@ nav span {
 }
 
 #contentSection form {
-  width: 80vw;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -135,8 +156,8 @@ nav span {
   gap: 4rem;
 }
 
-#formPostTitle {  
-  width: 100%;  
+#formPostTitle {
+  width: 100%;
   font-size: 3rem;
   background: transparent;
   border: none;
@@ -167,6 +188,10 @@ nav span {
 
 /* ==============  Write Article Link ============== */
 
+#WAForm {
+  width: 80vw;
+}
+
 #WALink {
   position: fixed;
   display: block;
@@ -176,6 +201,7 @@ nav span {
   bottom: 6rem;
   right: 6rem;
   background-color: var(--clr-text);
+  border: 2px solid var(--clr-foreground);
 
   transition: all 0.3s ease-in-out;
 }
@@ -196,4 +222,136 @@ nav span {
 .Mbutton:hover {
   background-color: var(--clr-background);
   color: var(--clr-text);
+}
+
+/* ============== Show Article preview ============== */
+
+.parentGrid {
+  min-height: 80vh;
+  width: 80vw;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  grid-column-gap: 50px;
+  grid-row-gap: 50px;
+}
+
+.divGrid {
+  background-color: var(--clr-sbackground);
+  border: 1px solid var(--clr-foreground);
+  border-radius: 10px;
+  padding: 2rem;
+  color: var(--clr-text);
+  transition: all 0.3s ease-in-out;
+}
+
+.divGridContainer {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.divGridContainer div {
+  width: 100%;
+}
+
+.GridTitleContainer {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+}
+
+.GridTitleContainer div {
+  width: 80%;
+  overflow: hidden;
+}
+
+.GridTitleContainer h2 {
+  font-size: 24px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  white-space: normal;
+}
+
+.GridTitleContainer span {
+  text-align: end;
+  font-size: 12px;
+  opacity: 0.65;
+}
+
+.divGrid p {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  white-space: normal;
+}
+
+.divGridButton {
+  padding: 8px 20px;
+  background-color: var(--clr-foreground);
+  color: var(--clr-text);
+  border: solid 2px var(--clr-foreground);
+  border-radius: 8px;
+  transition: all 0.3s ease-in-out;
+}
+
+.divGridButton:hover {
+  background-color: var(--clr-background);
+  color: var(--clr-text);
+}
+
+.parentGrid div:nth-child(1) {
+  grid-area: 1 / 1 / 2 / 2;
+}
+
+.parentGrid div:nth-child(2) {
+  grid-area: 1 / 2 / 2 / 3;
+}
+
+.parentGrid div:nth-child(3) {
+  grid-area: 1 / 3 / 2 / 4;
+
+}
+
+.parentGrid div:nth-child(4) {
+  grid-area: 2 / 1 / 3 / 2;
+}
+
+.parentGrid div:nth-child(5) {
+  grid-area: 2 / 2 / 3 / 3;
+}
+
+.parentGrid div:nth-child(6) {
+  grid-area: 2 / 3 / 3 / 4;
+
+}
+
+/* ============== Show One Article ============== */
+
+#affichePost {
+  width: 100%;
+  padding: 4rem;
+  display: flex;
+  align-items: start;
+  justify-content: center;
+  flex-direction: column;
+}
+
+#affichePost p {
+  padding: 1rem;
+}
+
+#afficheTitleContainer {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  width: 100%;
 }

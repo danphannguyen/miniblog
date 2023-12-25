@@ -127,10 +127,58 @@ function addPost($id, $title, $content)
     $query = "INSERT INTO articles (date_articles, title_articles, content_articles, ext_user) VALUES (:dateA, :title, :content, :id)";
 
     $stmt = $db->prepare($query);
-    $stmt->bindValue(":dateA", date("Y-m-d"), PDO::PARAM_STR);
+    $stmt->bindValue(":dateA", date("Y-m-d H:i:s"), PDO::PARAM_STR);
     $stmt->bindValue(":title", $title, PDO::PARAM_STR);
     $stmt->bindValue(":content", $content, PDO::PARAM_STR);
     $stmt->bindValue(":id", $id, PDO::PARAM_STR);
     // Exécution de la requête et retourne son état
     return $stmt->execute();
+}
+
+// Récupération des 6 premiers articles
+function getPostsOverview()
+{
+    $db = dbConnect();
+
+    $query = "SELECT articles.*, users.firstname_user, users.lastname_user
+    FROM articles
+    JOIN users ON articles.ext_user = users.id_user
+    ORDER BY articles.date_articles DESC
+    LIMIT 6;
+    ";
+    $stmt = $db->prepare($query);
+    $stmt->execute();
+
+    return $stmt->fetchall(PDO::FETCH_ASSOC);
+}
+
+function getAllPosts()
+{
+    $db = dbConnect();
+
+    $query = "SELECT articles.*, users.firstname_user, users.lastname_user
+    FROM articles
+    JOIN users ON articles.ext_user = users.id_user
+    ORDER BY articles.date_articles DESC;
+    ";
+    $stmt = $db->prepare($query);
+    $stmt->execute();
+
+    return $stmt->fetchall(PDO::FETCH_ASSOC);
+}
+
+function getPost($id)
+{
+    $db = dbConnect();
+
+    $query = "SELECT articles.*, users.firstname_user, users.lastname_user
+    FROM articles
+    JOIN users ON articles.ext_user = users.id_user
+    WHERE articles.id_articles = :id;
+    ";
+    $stmt = $db->prepare($query);
+    $stmt->bindValue(":id", $id, PDO::PARAM_STR);
+    $stmt->execute();
+
+    return $stmt->fetchall(PDO::FETCH_ASSOC);
 }

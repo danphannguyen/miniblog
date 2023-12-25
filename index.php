@@ -13,7 +13,7 @@ if (isset($_POST['action'])) {
         case 'login':
             // Si c'est login on teste la connexion
             $result = connexion($_POST['mailLogin'], $_POST['passwordLogin']);
-            include('./App/view/loginView.php');
+            include('./App/view/logView.php');
             break;
         case 'register':
             // Si c'est un register on vérifie les paramêtre et on register
@@ -27,7 +27,7 @@ if (isset($_POST['action'])) {
                 }
 
                 $result = register($_POST['mailRegister'], $_POST['passwordRegister'], $_POST['firstnameRegister'], $_POST['lastnameRegister'], $path);
-                include('./App/view/loginView.php');
+                include('./App/view/logView.php');
             }
             break;
         case 'logout':
@@ -45,8 +45,10 @@ if (isset($_POST['action'])) {
                 $result = addPost($_SESSION['id'], $_POST['formTitle'], $_POST['formContent']);
             }
             break;
+        case 'archives':
+            break;
         default:
-            echo "Erreur";
+            echo "Erreur ( traitement action )";
             break;
     }
 }
@@ -63,7 +65,7 @@ if (isset($_POST['action'])) {
 
 <body>
     <nav>
-        <a href="#" class="navLink">
+        <a href="./index.php?action=archives" class="navLink">
             <div class="dc-center">
                 <span class='bgNavSvg'><img class="navSvg" src="./img/archive.svg" alt=""></span>
                 <span>Archives</span>
@@ -175,7 +177,7 @@ if (isset($_POST['action'])) {
     <section id="contentSection">
 
         <?php
-        // Switch case pour Afficher les view
+        // Switch case pour Afficher les view si l'user est connecté
         if (isset($_SESSION['mail'])) {
 
             // Affichage de la modal profile
@@ -195,18 +197,43 @@ if (isset($_POST['action'])) {
                         break;
                     case 'read':
                         break;
+                    case 'archives':
+                        break;
+                    case 'seepost':
+                        break;
                     default:
-                        echo "Erreur";
+                        echo "Erreur ( connecté )";
                         break;
                 }
-
             } else {
 
                 // Affiche le bouton pour ajouter un article
                 include('./App/view/WALinkView.php');
-
             }
         }
+
+        // Var pour afficher les views si l'user n'est pas connecté
+        if (isset($_GET['action'])) {
+            switch ($_GET['action']) {
+                case 'write':
+                    break;
+                case 'archives':
+                    $posts = getAllPosts();
+                    include('./App/view/postsView.php');
+                    break;
+                case 'seepost':
+                    $post = getPost($_POST['idpost']);
+                    include('./App/view/affichePostView.php');
+                    break;
+                default:
+                    echo "Erreur ( non connecté )";
+                    break;
+            }
+        } else {
+            $posts = getPostsOverview();
+            include('./App/view/postsView.php');
+        }
+
 
         ?>
 
