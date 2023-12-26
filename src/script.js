@@ -9,8 +9,32 @@ function validateForm() {
     }
 }
 
-$("#commentSeeMore").click(function () { 
+$("#commentSeeMore").click(function () {
 
     $("#commentsWrap").toggleClass("heightAuto");
+
+});
+
+$("#adminButtonUsers").click(function () {
+
+    $("#adminWrapperUsers").removeClass("d-none");
+    $("#adminWrapperComments").addClass("d-none");
+    $("#adminWrapperPosts").addClass("d-none");
+
+});
+
+$("#adminButtonComments").click(function () {
+
+    $("#adminWrapperComments").removeClass("d-none");
+    $("#adminWrapperUsers").addClass("d-none");
+    $("#adminWrapperPosts").addClass("d-none");
+
+});
+
+$("#adminButtonPosts").click(function () {
+
+    $("#adminWrapperPosts").removeClass("d-none");
+    $("#adminWrapperComments").addClass("d-none");
+    $("#adminWrapperUsers").addClass("d-none");
 
 });

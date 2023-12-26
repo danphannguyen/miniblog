@@ -23,7 +23,7 @@ if (isset($_POST['action'])) {
                 $path = "./img/profile.svg";
 
                 if (isset($_FILES["profileFile"]) && $_FILES["profileFile"]["error"] == 0) {
-                    $path = addImage($mail, $_FILES["profileFile"]["tmp_name"]);
+                    $path = addImage($_POST['mailRegister'], $_FILES["profileFile"]["tmp_name"]);
                 }
 
                 $result = register($_POST['mailRegister'], $_POST['passwordRegister'], $_POST['firstnameRegister'], $_POST['lastnameRegister'], $path);
@@ -37,6 +37,7 @@ if (isset($_POST['action'])) {
             unset($_SESSION['firstname']);
             unset($_SESSION['lastname']);
             unset($_SESSION['profilePicture']);
+            unset($_SESSION['role']);
             session_destroy();
             break;
         case 'addPost':
@@ -48,12 +49,78 @@ if (isset($_POST['action'])) {
         case 'archives':
             break;
         case 'addComment':
-            var_dump($_POST);
             // Si c'est un addComment on ajoute le commentaire
             if (isset($_POST['comment'])) {
                 $result = addComment($_SESSION['id'], $_POST['idpost'], $_POST['comment']);
             }
             break;
+        case 'deleteUser':
+
+            if ($_SESSION['role'] == 1) {
+
+                if (isset($_POST['iduser'])) {
+                    deleteUser($_POST['iduser']);
+                }
+            } else {
+                echo "Vous n'avez pas la permission";
+            }
+            break;
+
+        case 'editUser':
+            if ($_SESSION['role'] == 1) {
+
+                if (isset($_POST['iduser'])) {
+                    editUser($_POST['iduser'], $_POST['mailEdit'], $_POST['firstnameEdit'], $_POST['lastnameEdit'], $_POST['passwordEdit']);
+                }
+            } else {
+                echo "Vous n'avez pas la permission";
+            }
+            break;
+
+        case 'editPost':
+            if ($_SESSION['role'] == 1) {
+
+                if (isset($_POST['idpost'])) {
+                    editPost($_POST['idpost'], $_POST['editPostTitle'], $_POST['editPostContent']);
+                }
+            } else {
+                echo "Vous n'avez pas la permission";
+            }
+            break;
+
+        case 'deletePost':
+            if ($_SESSION['role'] == 1) {
+
+                if (isset($_POST['idpost'])) {
+                    deletePost($_POST['idpost']);
+                }
+            } else {
+                echo "Vous n'avez pas la permission";
+            }
+            break;
+
+        case 'editComment':
+            if ($_SESSION['role'] == 1) {
+
+                if (isset($_POST['idcomment'])) {
+                    editComment($_POST['idcomment'], $_POST['editCommentContent']);
+                }
+            } else {
+                echo "Vous n'avez pas la permission";
+            }
+            break;
+
+        case 'deleteComment':
+            if ($_SESSION['role'] == 1) {
+
+                if (isset($_POST['idcomment'])) {
+                    deleteComment($_POST['idcomment']);
+                }
+            } else {
+                echo "Vous n'avez pas la permission";
+            }
+            break;
+
         default:
             echo "Erreur ( traitement action )";
             break;
@@ -184,7 +251,7 @@ if (isset($_POST['action'])) {
     <section id="contentSection">
 
 
-    <!-- Gestion des view que l'utilisateurs va voir -->
+        <!-- Gestion des view que l'utilisateurs va voir -->
         <?php
         // Var pour afficher les views si l'user n'est pas connecté
         if (isset($_GET['action'])) {
@@ -204,6 +271,8 @@ if (isset($_POST['action'])) {
                     include('./App/view/commentsView.php');
 
                     break;
+                case 'adminpanel':
+                    break;
                 default:
                     echo "Erreur ( non connecté )";
                     break;
@@ -212,6 +281,9 @@ if (isset($_POST['action'])) {
             $posts = getPostsOverview();
             include('./App/view/postsView.php');
         }
+
+
+
 
         // Switch case pour Afficher les view si l'user est connecté
         if (isset($_SESSION['mail'])) {
@@ -237,6 +309,18 @@ if (isset($_POST['action'])) {
                         break;
                     case 'seepost':
                         include('./App/view/addCommentsView.php');
+                        break;
+                    case 'adminpanel':
+                        // Si c'est un adminpanel on affiche le panel admin
+                        if ($_SESSION['role'] == 1) {
+
+                            $comments = getAdminAllComments();
+                            $posts = getAllPosts();
+                            $users = getAllUsers();
+                            include('./App/view/adminView.php');
+                        } else {
+                            echo "Vous n'avez pas la permission";
+                        }
                         break;
                     default:
                         echo "Erreur ( connecté )";

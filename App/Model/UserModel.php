@@ -80,6 +80,7 @@ function bindUserInfo($mail)
     $_SESSION['firstname'] = $result[0]['firstname_user'];
     $_SESSION['lastname'] = $result[0]['lastname_user'];
     $_SESSION['profilePicture'] = $result[0]['path_user'];
+    $_SESSION['role'] = $result[0]['role_user'];
 
     return isset($_SESSION['mail'], $_SESSION['firstname'], $_SESSION['lastname']);
 }
@@ -213,4 +214,117 @@ function addComment($userId, $postId, $content)
     $stmt->bindValue(":idpost", $postId, PDO::PARAM_STR);
     // Exécution de la requête et retourne son état
     return $stmt->execute();
+}
+
+function getAllUsers()
+{
+    $db = dbConnect();
+
+    $query = "SELECT * FROM users";
+    $stmt = $db->prepare($query);
+    $stmt->execute();
+
+    return $stmt->fetchall(PDO::FETCH_ASSOC);
+}
+
+function deleteUser($id_user) {
+
+    $db = dbConnect();
+
+    $query = "DELETE FROM users WHERE id_user = :id";
+    $stmt = $db->prepare($query);
+    $stmt->bindValue(":id", $id_user, PDO::PARAM_STR);
+    $stmt->execute();
+
+    return $stmt->fetchall(PDO::FETCH_ASSOC);
+
+}
+
+function editUser($id_user, $mail, $firstname, $lastname, $password) {
+
+    $db = dbConnect();
+
+    $hash = password_hash($password, PASSWORD_DEFAULT);
+
+    $query = "UPDATE users SET mail_user = :mail, password_user = :pswd, firstname_user = :firstname, lastname_user = :lastname WHERE id_user = :id";
+
+    $stmt = $db->prepare($query);
+    $stmt->bindValue(":mail", $mail, PDO::PARAM_STR);
+    $stmt->bindValue(":pswd", $hash, PDO::PARAM_STR);
+    $stmt->bindValue(":firstname", $firstname, PDO::PARAM_STR);
+    $stmt->bindValue(":lastname", $lastname, PDO::PARAM_STR);
+    $stmt->bindValue(":id", $id_user, PDO::PARAM_STR);
+    // Exécution de la requête et retourne son état
+    return $stmt->execute();
+
+}
+
+function editPost($id_post, $title, $content) {
+
+    $db = dbConnect();
+
+    $query = "UPDATE articles SET title_articles = :title, content_articles = :content WHERE id_articles = :id";
+
+    $stmt = $db->prepare($query);
+    $stmt->bindValue(":title", $title, PDO::PARAM_STR);
+    $stmt->bindValue(":content", $content, PDO::PARAM_STR);
+    $stmt->bindValue(":id", $id_post, PDO::PARAM_STR);
+    // Exécution de la requête et retourne son état
+    return $stmt->execute();
+
+}
+
+function deletePost($id_post) {
+
+    $db = dbConnect();
+
+    $query = "DELETE FROM articles WHERE id_articles = :id";
+    $stmt = $db->prepare($query);
+    $stmt->bindValue(":id", $id_post, PDO::PARAM_STR);
+    $stmt->execute();
+
+    return $stmt->fetchall(PDO::FETCH_ASSOC);
+
+}
+
+function getAdminAllComments() {
+        $db = dbConnect();
+    
+        $query = "SELECT comments.*, users.firstname_user, users.lastname_user, users.path_user, articles.title_articles
+        FROM comments
+        JOIN users ON comments.ext_user = users.id_user
+        JOIN articles ON comments.ext_article = articles.id_articles
+        ORDER BY comments.date_comments DESC;
+        ";
+        $stmt = $db->prepare($query);
+        $stmt->execute();
+    
+        return $stmt->fetchall(PDO::FETCH_ASSOC);
+}
+
+function editComment($id_comment, $content) {
+
+    $db = dbConnect();
+
+    $query = "UPDATE comments SET content_comments = :content WHERE id_comments = :id";
+
+    $stmt = $db->prepare($query);
+    $stmt->bindValue(":content", $content, PDO::PARAM_STR);
+    $stmt->bindValue(":id", $id_comment, PDO::PARAM_STR);
+    // Exécution de la requête et retourne son état
+    return $stmt->execute();
+
+}
+
+function deleteComment($id_comment) {
+
+    $db = dbConnect();
+
+    $query = "DELETE FROM comments WHERE id_comments = :id";
+    $stmt = $db->prepare($query);
+    $stmt->bindValue(":id", $id_comment, PDO::PARAM_STR);
+    $stmt->execute();
+
+    return $stmt->fetchall(PDO::FETCH_ASSOC);
+
 }
