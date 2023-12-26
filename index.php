@@ -7,7 +7,7 @@ session_start();
 // Include du fichiers contenant toute les fonctions
 include('./App/Model/UserModel.php');
 
-// switch case pour traiter l'action
+// switch case pour traiter l'action de l'user ( connexion, inscription, déconnexion, ajout d'article, ajout de commentaire ) donc tout les process en back
 if (isset($_POST['action'])) {
     switch ($_POST['action']) {
         case 'login':
@@ -46,6 +46,13 @@ if (isset($_POST['action'])) {
             }
             break;
         case 'archives':
+            break;
+        case 'addComment':
+            var_dump($_POST);
+            // Si c'est un addComment on ajoute le commentaire
+            if (isset($_POST['comment'])) {
+                $result = addComment($_SESSION['id'], $_POST['idpost'], $_POST['comment']);
+            }
             break;
         default:
             echo "Erreur ( traitement action )";
@@ -176,7 +183,36 @@ if (isset($_POST['action'])) {
 
     <section id="contentSection">
 
+
+    <!-- Gestion des view que l'utilisateurs va voir -->
         <?php
+        // Var pour afficher les views si l'user n'est pas connecté
+        if (isset($_GET['action'])) {
+            switch ($_GET['action']) {
+                case 'write':
+                    break;
+                case 'archives':
+                    $posts = getAllPosts();
+                    include('./App/view/postsView.php');
+                    break;
+                case 'seepost':
+                    $idpost = $_POST['idpost'];
+                    $post = getPost($idpost);
+                    include('./App/view/affichePostView.php');
+
+                    $comments = getAllComments($idpost);
+                    include('./App/view/commentsView.php');
+
+                    break;
+                default:
+                    echo "Erreur ( non connecté )";
+                    break;
+            }
+        } else {
+            $posts = getPostsOverview();
+            include('./App/view/postsView.php');
+        }
+
         // Switch case pour Afficher les view si l'user est connecté
         if (isset($_SESSION['mail'])) {
 
@@ -200,6 +236,7 @@ if (isset($_POST['action'])) {
                     case 'archives':
                         break;
                     case 'seepost':
+                        include('./App/view/addCommentsView.php');
                         break;
                     default:
                         echo "Erreur ( connecté )";
@@ -210,28 +247,6 @@ if (isset($_POST['action'])) {
                 // Affiche le bouton pour ajouter un article
                 include('./App/view/WALinkView.php');
             }
-        }
-
-        // Var pour afficher les views si l'user n'est pas connecté
-        if (isset($_GET['action'])) {
-            switch ($_GET['action']) {
-                case 'write':
-                    break;
-                case 'archives':
-                    $posts = getAllPosts();
-                    include('./App/view/postsView.php');
-                    break;
-                case 'seepost':
-                    $post = getPost($_POST['idpost']);
-                    include('./App/view/affichePostView.php');
-                    break;
-                default:
-                    echo "Erreur ( non connecté )";
-                    break;
-            }
-        } else {
-            $posts = getPostsOverview();
-            include('./App/view/postsView.php');
         }
 
 

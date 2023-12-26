@@ -355,3 +355,90 @@ nav span {
   justify-content: space-between;
   width: 100%;
 }
+
+/* ============== Comments Section ============== */
+
+#commentsSection {
+  width: 80%;
+}
+
+#commentsContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3rem;
+}
+
+#commentsWrap {
+  width: 100%;
+  height: 50vh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+.heightAuto {
+  height: auto !important;
+}
+
+.comment {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  gap: 2rem;
+  padding: 1rem;
+  background-color: var(--clr-sbackground);
+  border-radius: 20px;
+}
+
+.commentHeader {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: start;
+}
+
+.commentHeader img {
+  border-radius: 50%;
+  margin-right: 1rem;
+  height: 80px;
+  width: 80px;
+}
+
+.commentHeader h3 {
+  margin: 0;
+}
+
+.comment p {
+  margin: 0;
+}
+
+#formComment {
+  width: 80%;
+  display: flex;
+  gap: 2rem !important;
+}
+
+#comment {
+  width: 100%;
+}
+
+.commentButton {
+  padding: 8px 20px;
+  background-color: var(--clr-foreground);
+  color: var(--clr-text);
+  border: solid 2px var(--clr-foreground);
+  border-radius: 8px;
+  transition: all 0.3s ease-in-out;
+}
+
+.commentButton:hover {
+  background-color: var(--clr-background);
+  color: var(--clr-text);
+}

@@ -182,3 +182,35 @@ function getPost($id)
 
     return $stmt->fetchall(PDO::FETCH_ASSOC);
 }
+
+function getAllComments($id)
+{
+    $db = dbConnect();
+
+    $query = "SELECT comments.*, users.firstname_user, users.lastname_user, users.path_user
+    FROM comments
+    JOIN users ON comments.ext_user = users.id_user
+    WHERE comments.ext_article = :id
+    ORDER BY comments.date_comments DESC;
+    ";
+    $stmt = $db->prepare($query);
+    $stmt->bindValue(":id", $id, PDO::PARAM_STR);
+    $stmt->execute();
+
+    return $stmt->fetchall(PDO::FETCH_ASSOC);
+}
+
+function addComment($userId, $postId, $content)
+{
+    $db = dbConnect();
+
+    $query = "INSERT INTO comments (content_comments, date_comments, ext_user, ext_article) VALUES (:content, :dateC, :id, :idpost)";
+
+    $stmt = $db->prepare($query);
+    $stmt->bindValue(":content", $content, PDO::PARAM_STR);
+    $stmt->bindValue(":dateC", date("Y-m-d H:i:s"), PDO::PARAM_STR);
+    $stmt->bindValue(":id", $userId, PDO::PARAM_STR);
+    $stmt->bindValue(":idpost", $postId, PDO::PARAM_STR);
+    // Exécution de la requête et retourne son état
+    return $stmt->execute();
+}
